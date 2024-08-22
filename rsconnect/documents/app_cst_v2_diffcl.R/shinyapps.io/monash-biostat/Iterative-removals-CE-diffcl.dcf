@@ -1,0 +1,14 @@
+name: Iterative-removals-CE-diffcl
+title: Iterative-removals-CE-diffcl
+username:
+account: monash-biostat
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 12368208
+bundleId: 8998437
+url: https://monash-biostat.shinyapps.io/Iterative-removals-CE-diffcl/
+when: 1724034688.72557
+lastSyncTime: 1724034688.7256
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: SuppInfo_Figures.R
