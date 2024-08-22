@@ -1,4 +1,3 @@
-#setwd("G:\\Shared drives\\Ehsan PhD work\\Codes\\Git\\Iterative-removals-IC-cost\\")
 source("CRTVarAdj_func.R", local=TRUE)
 source("IterRemCst_func_v2_diffcl.R", local=TRUE)
 source("FigGenDf_func_v2_diffcl.R", local=TRUE)
@@ -92,13 +91,6 @@ ui <- fluidPage(
                          min = 0, max = 100,
                          value = 80, step = 1),
             checkboxInput("only_min_power", "Only display designs with at least minimum acceptable power", TRUE),
-
-
-            #hr(),
-            #The suitability of this degrees of freedom correction is uncertain!!!
-            # radioButtons("dist", label = ("Normal approximation"),
-            #              choices = list("Normal approximation" = 1, "T-distribution" = 0), selected = 1),
-            # hr(),
             
             h4("Cost components"),
             
@@ -273,20 +265,6 @@ server <- function(input, output, session) {
         }
     })
     
-    # observeEvent(input$only_min_power, {
-    #   if (input$only_min_power) {
-    #     # Enable the numeric input when the checkbox is ticked
-    #     #enable("accept_pwr")
-    #     updateNumericInput(session, "accept_pwr", value = 80)  # Reset to default or any other desired value
-    #     #show("optplot")   # Show the optimal plot output
-    #   } else {
-    #     # Disable the numeric input and set the value to 0 when the checkbox is not ticked
-    #     updateNumericInput(session, "accept_pwr", value = 0)
-    #     #disable("accept_pwr")
-    #    # hide("optplot")  # Hide the optimal plot output
-    #   }
-    # })
-
     output$plotheader1a <- eventReactive(input$update, {
         header1a()
     })
