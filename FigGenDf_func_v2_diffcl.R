@@ -1,9 +1,7 @@
 library("memoise")
 FigGenDf<-function(Tp,N_s,m,rho0,r,type,c,p,pprim,g,gprim,effsiz,accept_pwr) {
-#FigGenDf<-function(Tp,N_s,m,rho0,r,type,c,p,pprim,g,gprim,effsiz,accept_pwr,dist) {
   
   IterRes<- IterRemove_diffcl_CE(Tp,N_s,m,rho0,r,type,c,p,pprim,g,gprim,effsiz,accept_pwr)
-  #IterRes<- IterRemove_diffcl_CE(Tp,N_s,m,rho0,r,type,c,p,pprim,g,gprim,effsiz,accept_pwr,dist)
   melted_varmatexcl<- melt(IterRes[[1]])
   melted_desmatexcl<- melt(IterRes[[2]])
   
