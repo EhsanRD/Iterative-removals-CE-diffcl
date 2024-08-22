@@ -53,6 +53,7 @@ generatePlotly <- function(FigRes, xVar, yVar, xTitle, yTitle, hoverText) {
            legend = list(orientation = "h", xanchor = "center", yanchor = "bottom", x = 0.5, y = -0.5, font = list(size = 16)),
            margin = list(l = 100, r = 40))
 }
+
 #The FigGenDf function will cache its results for different input combinations, 
 #and subsequent calls with the same inputs will not recompute the results.
 FigGenDf <- memoise(FigGenDf)
