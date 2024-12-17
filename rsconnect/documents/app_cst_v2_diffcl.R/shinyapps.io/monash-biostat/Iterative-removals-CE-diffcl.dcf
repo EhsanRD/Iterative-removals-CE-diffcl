@@ -5,10 +5,8 @@ account: monash-biostat
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 12368208
-bundleId: 8998437
+bundleId: 9463533
 url: https://monash-biostat.shinyapps.io/Iterative-removals-CE-diffcl/
-when: 1724034688.72557
-lastSyncTime: 1724034688.7256
 asMultiple: FALSE
 asStatic: FALSE
-ignoredFiles: SuppInfo_Figures.R
+ignoredFiles: all_estimates_SW.csv|README.md|SuppInfo_Figures.R|time_records_SW.csv
