@@ -21,9 +21,9 @@ library("memoise")
 
 
 ui <- fluidPage(
-  useShinyjs(),
-    #tags$head(includeHTML(("google-analytics.html"))),
+  tags$head(includeHTML(("google-analytics.html"))),
   
+  useShinyjs(),
     titlePanel(h1("Cost-efficient incomplete stepped wedge designs",
                   h2("Using an iterative approach"),
                   h3(""))),
@@ -98,7 +98,15 @@ ui <- fluidPage(
             numericInput("c", "Cost per cluster",
                          min = 100, max = 100000,
                          value = 2500, step = 100),
-            
+           #Input: Interval, cost of implementing the intervention condition in a cluster
+           numericInput("k", "cost of implementing the intervention condition in a cluster",
+                        min = 0, max = 100000,
+                        value = 500, step = 100),
+          # Input: Interval, cost of implementing the control condition in a cluster
+           numericInput("kprim", "Cost of implementing the control condition in a cluster",
+                        min = 0, max = 100000,
+                        value = 0, step = 100),
+           
             # Input: Interval, cost per subject receiving intervention 
             numericInput("p", "Cost per subject receiving intervention ",
                          min = 0, max = 5000,
@@ -227,6 +235,8 @@ server <- function(input, output, session) {
         accept_pwr=80,
         only_min_power=TRUE,
         c=2500,
+        k=500,
+        kprim=0,
         p=140,
         pprim=80,
         g=230,
@@ -243,6 +253,8 @@ server <- function(input, output, session) {
         values$accept_pwr<- input$accept_pwr
         values$only_min_power<- input$only_min_power
         values$c <- input$c
+        values$k <- input$k
+        values$kprim <- input$kprim
         values$p <- input$p
         values$pprim <- input$pprim
         values$g <- input$g
@@ -365,7 +377,8 @@ server <- function(input, output, session) {
         Inipow<- pow(varvec[1], values$effsiz,siglevel=0.05)*100
                    # values$effsiz,values$dist,dof,siglevel=0.05)*100
         tryCatch({
-            FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim, 
+            FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c,values$k,values$kprim, 
+                               values$p, values$pprim, values$g, values$gprim, 
                                values$effsiz, ifelse ((values$only_min_power),values$accept_pwr,0))
                               # values$effsiz,values$accept_pwr,values$dist)
           
@@ -398,7 +411,8 @@ server <- function(input, output, session) {
     #The Optimal shematic design
     output$optplot <- renderPlotly({
       tryCatch({
-      FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim,
+      FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$k,values$kprim, 
+                         values$p, values$pprim, values$g, values$gprim,
                          values$effsiz, values$accept_pwr)
       
       color_palette <- colorRampPalette(brewer.pal(8, "YlGn"))(length(unique(FigRes[[2]]$value)) - 2)
@@ -430,7 +444,8 @@ server <- function(input, output, session) {
     
     output$Varsplot <- renderPlotly({
       tryCatch({
-        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim,
+        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$k,values$kprim, 
+                           values$p, values$pprim, values$g, values$gprim,
                            values$effsiz, ifelse ((values$only_min_power),values$accept_pwr,0))
                          # values$effsiz, values$accept_pwr,values$dist)
         p2 <- generatePlotly(FigRes, ~iter, ~var, "Iteration", "Variance",
@@ -448,7 +463,8 @@ server <- function(input, output, session) {
     
     output$Prelossplot <- renderPlotly({
       tryCatch({
-        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim, 
+        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$k,values$kprim, 
+                           values$p, values$pprim, values$g, values$gprim, 
                            values$effsiz, ifelse ((values$only_min_power),values$accept_pwr,0))
                          # values$effsiz, values$accept_pwr,values$dist)
         p3 <- generatePlotly(FigRes, ~iter, ~Preloss, "Iteration", "Precision loss (%)",
@@ -465,7 +481,8 @@ server <- function(input, output, session) {
     })
     output$Powplot <- renderPlotly({
       tryCatch({
-        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim,
+        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$k,values$kprim, 
+                           values$p, values$pprim, values$g, values$gprim,
                            values$effsiz, ifelse ((values$only_min_power),values$accept_pwr,0))
                          # values$effsiz, values$accept_pwr,values$dist)
         p4 <- generatePlotly(FigRes, ~iter, ~power, "Iteration", "Power (%)",
@@ -483,7 +500,8 @@ server <- function(input, output, session) {
     
     output$Cstplot <- renderPlotly({
       tryCatch({
-        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim, 
+        FigRes <- FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$k,values$kprim, 
+                           values$p, values$pprim, values$g, values$gprim, 
                            values$effsiz, ifelse ((values$only_min_power),values$accept_pwr,0))
                          # values$effsiz, values$accept_pwr,values$dist)
         p5 <- generatePlotly(FigRes, ~iter, ~cost, "Iteration", "Cost ($)",
@@ -500,7 +518,8 @@ server <- function(input, output, session) {
     })
     output$CstVarplot<-renderPlotly({
       tryCatch({
-        FigRes <-  FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim,
+        FigRes <-  FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$k,values$kprim, 
+                            values$p, values$pprim, values$g, values$gprim,
                             values$effsiz, ifelse ((values$only_min_power),values$accept_pwr,0))
                           # values$effsiz,values$accept_pwr,values$dist)
         p6 <- generatePlotly(FigRes, ~var, ~cost, "Variance", "Cost ($)",
@@ -520,7 +539,8 @@ server <- function(input, output, session) {
     #Relative cost efficiency plot
     output$RCEplot<-renderPlotly({
       tryCatch({
-        FigRes <-  FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$p, values$pprim, values$g, values$gprim,
+        FigRes <-  FigGenDf(values$Tp, values$N_s, values$m, values$rho0, values$r, values$type, values$c, values$k,values$kprim, 
+                            values$p, values$pprim, values$g, values$gprim,
                             values$effsiz, ifelse ((values$only_min_power),values$accept_pwr,0))
                             # values$effsiz,values$accept_pwr,values$dist)
         p7 <- generatePlotly(FigRes, ~iter, ~RCE, "Iteration", "Relative Cost Efficiency (RCE)",
